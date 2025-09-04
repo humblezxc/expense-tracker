@@ -55,16 +55,29 @@ export class ExpensesService {
                     total: { $sum: '$amount' },
                 },
             },
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'categoryData',
+                },
+            },
+            {
+                $unwind: '$categoryData',
+            },
+            {
+                $project: {
+                    _id: 0,
+                    category: '$categoryData.name',
+                    total: 1,
+                },
+            },
         ]);
 
         const total = result.reduce((sum, r) => sum + r.total, 0);
 
-        const breakdown = result.map(r => ({
-            category: r._id.toString(),
-            total: r.total,
-        }));
-
-        return { total, breakdown };
+        return { total, breakdown: result };
     }
 
     findAll() {
