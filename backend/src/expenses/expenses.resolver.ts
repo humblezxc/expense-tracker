@@ -2,6 +2,7 @@ import { Resolver, Query, Mutation, Args, ObjectType, Field, ID, Int } from '@ne
 import { ExpensesService } from './expenses.service';
 import { UpdateExpenseInput } from './dto/update-expense.input';
 import { PaginatedExpenses } from './dto/paginated-expenses.output';
+import { ExpensesAnalytics } from "./dto/analytics.output";
 
 @ObjectType()
 export class ExpenseType {
@@ -29,6 +30,11 @@ export class ExpensesResolver {
         @Args('categoryId', { type: () => String, nullable: true }) categoryId?: string,
     ) {
         return this.expensesService.findPaginated(skip, take, categoryId);
+    }
+
+    @Query(() => ExpensesAnalytics)
+    analytics() {
+        return this.expensesService.getAnalytics();
     }
 
     @Mutation(() => ExpenseType)

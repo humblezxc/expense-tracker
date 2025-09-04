@@ -47,6 +47,26 @@ export class ExpensesService {
         return { items, totalCount };
     }
 
+    async getAnalytics() {
+        const result = await this.expenseModel.aggregate([
+            {
+                $group: {
+                    _id: '$category',
+                    total: { $sum: '$amount' },
+                },
+            },
+        ]);
+
+        const total = result.reduce((sum, r) => sum + r.total, 0);
+
+        const breakdown = result.map(r => ({
+            category: r._id.toString(),
+            total: r.total,
+        }));
+
+        return { total, breakdown };
+    }
+
     findAll() {
         return this.expenseModel.find().populate('category').exec();
     }
