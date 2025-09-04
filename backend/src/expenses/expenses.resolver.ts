@@ -1,5 +1,6 @@
 import { Resolver, Query, Mutation, Args, ObjectType, Field, ID } from '@nestjs/graphql';
 import { ExpensesService } from './expenses.service';
+import {UpdateExpenseInput} from "./dto/update-expense.input";
 
 @ObjectType()
 class ExpenseType {
@@ -28,6 +29,11 @@ export class ExpensesResolver {
         @Args('notes', { nullable: true }) notes?: string,
     ) {
         return this.expensesService.create({ title, amount, category, notes });
+    }
+
+    @Mutation(() => ExpenseType, { nullable: true })
+    updateExpense(@Args('data') data: UpdateExpenseInput) {
+        return this.expensesService.update(data);
     }
 
     @Mutation(() => ExpenseType, { nullable: true })

@@ -15,6 +15,19 @@ export class ExpensesService {
         return expense.save();
     }
 
+    async update(data: { id: string; title?: string; amount?: number; category?: string; notes?: string }) {
+        const updateData: any = { ...data };
+        if (data.category) {
+            updateData.category = new Types.ObjectId(data.category);
+        }
+        delete updateData.id;
+
+        return this.expenseModel
+            .findByIdAndUpdate(data.id, updateData, { new: true })
+            .populate('category')
+            .exec();
+    }
+
     findAll() {
         return this.expenseModel.find().populate('category').exec();
     }
