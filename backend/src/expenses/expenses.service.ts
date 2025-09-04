@@ -28,6 +28,25 @@ export class ExpensesService {
             .exec();
     }
 
+    async findPaginated(skip: number, take: number, categoryId?: string) {
+        const filter: any = {};
+        if (categoryId) {
+            filter.category = new Types.ObjectId(categoryId);
+        }
+
+        const [items, totalCount] = await Promise.all([
+            this.expenseModel.find(filter)
+                .populate('category')
+                .sort({ date: -1 })
+                .skip(skip)
+                .limit(take)
+                .exec(),
+            this.expenseModel.countDocuments(filter),
+        ]);
+
+        return { items, totalCount };
+    }
+
     findAll() {
         return this.expenseModel.find().populate('category').exec();
     }

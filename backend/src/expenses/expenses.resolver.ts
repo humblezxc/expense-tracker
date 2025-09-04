@@ -1,9 +1,10 @@
-import { Resolver, Query, Mutation, Args, ObjectType, Field, ID } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ObjectType, Field, ID, Int } from '@nestjs/graphql';
 import { ExpensesService } from './expenses.service';
-import {UpdateExpenseInput} from "./dto/update-expense.input";
+import { UpdateExpenseInput } from './dto/update-expense.input';
+import { PaginatedExpenses } from './dto/paginated-expenses.output';
 
 @ObjectType()
-class ExpenseType {
+export class ExpenseType {
     @Field(() => ID) id: string;
     @Field() title: string;
     @Field() amount: number;
@@ -17,8 +18,17 @@ export class ExpensesResolver {
     constructor(private readonly expensesService: ExpensesService) {}
 
     @Query(() => [ExpenseType])
-    expenses() {
+    allExpenses() {
         return this.expensesService.findAll();
+    }
+
+    @Query(() => PaginatedExpenses)
+    expenses(
+        @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
+        @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
+        @Args('categoryId', { type: () => String, nullable: true }) categoryId?: string,
+    ) {
+        return this.expensesService.findPaginated(skip, take, categoryId);
     }
 
     @Mutation(() => ExpenseType)
