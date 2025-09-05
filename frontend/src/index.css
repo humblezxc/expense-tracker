@@ -1,1 +1,11 @@
+@import "@radix-ui/themes/styles.css";
 @import "tailwindcss";
+
+@theme {
+    --color-bg-dark: #1D1D1B;
+    --color-grey-light: rgba(255, 255, 255, .1);
+    --color-grey: rgba(255, 255, 255, .2);
+    --color-red: #E30613;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
