@@ -9,23 +9,27 @@ export class ExpensesService {
 
     async create(data: { title: string; amount: number; category: string; notes?: string }) {
         const expense = new this.expenseModel({
-            ...data,
+            title: data.title,
+            amount: data.amount,
             category: new Types.ObjectId(data.category),
+            notes: data.notes,
         });
-        return expense.save();
+        await expense.save();
+        await expense.populate('category');
+        return expense.toObject();
     }
 
     async update(data: { id: string; title?: string; amount?: number; category?: string; notes?: string }) {
         const updateData: any = { ...data };
+        delete updateData.id;
+
         if (data.category) {
             updateData.category = new Types.ObjectId(data.category);
         }
-        delete updateData.id;
 
-        return this.expenseModel
-            .findByIdAndUpdate(data.id, updateData, { new: true })
-            .populate('category')
-            .exec();
+        const updated = await this.expenseModel.findByIdAndUpdate(data.id, updateData, { new: true }).populate('category');
+        if (!updated) return null;
+        return updated.toObject();
     }
 
     async findPaginated(skip: number, take: number, categoryId?: string) {
@@ -34,15 +38,38 @@ export class ExpensesService {
             filter.category = new Types.ObjectId(categoryId);
         }
 
-        const [items, totalCount] = await Promise.all([
-            this.expenseModel.find(filter)
+        const [docs, totalCount] = await Promise.all([
+            this.expenseModel
+                .find(filter)
                 .populate('category')
                 .sort({ date: -1 })
                 .skip(skip)
                 .limit(take)
-                .exec(),
+                .lean(),
             this.expenseModel.countDocuments(filter),
         ]);
+
+        const items = (docs || []).map((d: any) => {
+            const id = d._id ? d._id.toString() : d.id ?? null;
+
+            let category: { id?: string; name?: string } | null = null;
+            if (d.category) {
+                if (typeof d.category === 'object') {
+                    category = {
+                        id: d.category._id ? d.category._id.toString() : d.category.id,
+                        name: d.category.name,
+                    };
+                } else {
+                    category = { id: d.category.toString(), name: undefined };
+                }
+            }
+
+            return {
+                ...d,
+                id,
+                category,
+            };
+        });
 
         return { items, totalCount };
     }
