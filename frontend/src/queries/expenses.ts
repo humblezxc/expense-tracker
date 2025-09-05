@@ -26,15 +26,29 @@ export const CREATE_EXPENSE = gql`
       title
       amount
       notes
-      category {
-        id
-        name
-      }
       date
       category { id name }
     }
   }
 `;
+
+export const UPDATE_EXPENSE = gql`
+  mutation UpdateExpense($data: UpdateExpenseInput!) {
+    updateExpense(data: $data) {
+      id
+      title
+      amount
+      notes
+      date
+      category { id name }
+    }
+  }
+`;
+
+export const REMOVE_EXPENSE = gql`
+  mutation RemoveExpense($id: String!) {
+    removeExpense(id: $id) {
+      id
     }
   }
 `;
