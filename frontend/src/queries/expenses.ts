@@ -18,3 +18,28 @@ export const GET_EXPENSES = gql`
     }
   }
 `;
+
+export const CREATE_EXPENSE = gql`
+  mutation CreateExpense(
+    $title: String!
+    $amount: Float!
+    $category: String!
+    $notes: String
+  ) {
+    createExpense(
+      title: $title
+      amount: $amount
+      category: $category
+      notes: $notes
+    ) {
+      id
+      title
+      amount
+      notes
+      category {
+        id
+        name
+      }
+    }
+  }
+`;
