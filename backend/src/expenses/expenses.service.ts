@@ -81,12 +81,13 @@ export class ExpensesService {
                 },
             },
             {
-                $unwind: '$categoryData',
+                $unwind: { path: '$categoryData', preserveNullAndEmptyArrays: true },
             },
             {
                 $project: {
                     _id: 0,
-                    category: '$categoryData.name',
+                    categoryId: '$_id',
+                    categoryName: '$categoryData.name',
                     total: 1,
                 },
             },
@@ -94,7 +95,20 @@ export class ExpensesService {
 
         const total = result.reduce((sum, r) => sum + r.total, 0);
 
-        return { total, breakdown: result };
+        const breakdown = result.map((r) => {
+            const id = r.categoryId ? r.categoryId.toString() : null;
+            return {
+                category: id
+                    ? {
+                        id,
+                        name: r.categoryName ?? 'Unknown',
+                    }
+                    : null,
+                total: r.total,
+            };
+        });
+
+        return { total, breakdown };
     }
 
     findAll() {
