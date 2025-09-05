@@ -3,6 +3,7 @@ import { ExpensesService } from './expenses.service';
 import { UpdateExpenseInput } from './dto/update-expense.input';
 import { PaginatedExpenses } from './dto/paginated-expenses.output';
 import { ExpensesAnalytics } from "./dto/analytics.output";
+import { CategoryType } from "../categories/categories.resolver";
 
 @ObjectType()
 export class ExpenseType {
@@ -11,7 +12,7 @@ export class ExpenseType {
     @Field() amount: number;
     @Field() date: Date;
     @Field({ nullable: true }) notes?: string;
-    @Field(() => String) category: string;
+    @Field(() => CategoryType) category: CategoryType;
 }
 
 @Resolver(() => ExpenseType)

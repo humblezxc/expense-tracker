@@ -2,7 +2,7 @@ import { Resolver, Query, ObjectType, Field, ID } from '@nestjs/graphql';
 import { CategoriesService } from './categories.service';
 
 @ObjectType()
-class CategoryType {
+export class CategoryType {
     @Field(() => ID)
     id: string;
 
