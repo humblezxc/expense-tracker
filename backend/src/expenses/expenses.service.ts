@@ -22,10 +22,7 @@ export class ExpensesService {
     async update(data: { id: string; title?: string; amount?: number; category?: string; notes?: string }) {
         const updateData: any = { ...data };
         delete updateData.id;
-
-        if (data.category) {
-            updateData.category = new Types.ObjectId(data.category);
-        }
+        if (data.category) updateData.category = new Types.ObjectId(data.category);
 
         const updated = await this.expenseModel.findByIdAndUpdate(data.id, updateData, { new: true }).populate('category');
         if (!updated) return null;
@@ -34,9 +31,7 @@ export class ExpensesService {
 
     async findPaginated(skip: number, take: number, categoryId?: string) {
         const filter: any = {};
-        if (categoryId) {
-            filter.category = new Types.ObjectId(categoryId);
-        }
+        if (categoryId) filter.category = new Types.ObjectId(categoryId);
 
         const [docs, totalCount] = await Promise.all([
             this.expenseModel
@@ -60,15 +55,10 @@ export class ExpensesService {
                         name: d.category.name,
                     };
                 } else {
-                    category = { id: d.category.toString(), name: undefined };
+                    category = { id: d.category.toString() };
                 }
             }
-
-            return {
-                ...d,
-                id,
-                category,
-            };
+            return { ...d, id, category };
         });
 
         return { items, totalCount };
@@ -116,6 +106,7 @@ export class ExpensesService {
     }
 
     async remove(id: string) {
-        return this.expenseModel.findByIdAndDelete(id).exec();
+        const removed = await this.expenseModel.findByIdAndDelete(id).populate('category');
+        return removed ? removed.toObject() : null;
     }
 }

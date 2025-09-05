@@ -12,7 +12,7 @@ export class ExpenseType {
     @Field() amount: number;
     @Field() date: Date;
     @Field({ nullable: true }) notes?: string;
-    @Field(() => CategoryType) category: CategoryType;
+    @Field(() => CategoryType, { nullable: true }) category?: CategoryType;
 }
 
 @Resolver(() => ExpenseType)
