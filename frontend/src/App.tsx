@@ -1,11 +1,11 @@
-import './App.css'
+import Categories from "./pages/Categories.tsx";
 
 function App() {
 
   return (
-    <>
-      basic frontend
-    </>
+      <div className="container mx-auto p-4">
+          <Categories />
+      </div>
   )
 }
 
