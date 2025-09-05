@@ -50,3 +50,22 @@ export interface CreateExpenseVars {
     category: string;
     notes?: string | null;
 }
+
+export interface AnalyticsCategory {
+    id: string;
+    name: string;
+}
+
+export interface CategoryBreakdown {
+    category?: AnalyticsCategory | null;
+    total: number;
+}
+
+export interface ExpensesAnalytics {
+    total: number;
+    breakdown: CategoryBreakdown[];
+}
+
+export interface GetAnalyticsData {
+    analytics: ExpensesAnalytics;
+}

@@ -10,7 +10,10 @@ import Button from "./Button.tsx";
 export default function AddExpenseForm({ onCreated }: { onCreated?: () => Promise<void> | void }) {
     const { data: catData } = useQuery<{ categories: Category[] }>(GET_CATEGORIES);
 
-    const [createExpense, { loading }] = useMutation<CreateExpenseData, CreateExpenseVars>(CREATE_EXPENSE);
+    const [createExpense, { loading }] = useMutation<CreateExpenseData, CreateExpenseVars>(CREATE_EXPENSE, {
+        refetchQueries: ["GetExpenses", "GetAnalytics"],
+        awaitRefetchQueries: true,
+    });
 
     const [form, setForm] = useState({
         title: "",
