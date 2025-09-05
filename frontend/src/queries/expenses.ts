@@ -20,18 +20,8 @@ export const GET_EXPENSES = gql`
 `;
 
 export const CREATE_EXPENSE = gql`
-  mutation CreateExpense(
-    $title: String!
-    $amount: Float!
-    $category: String!
-    $notes: String
-  ) {
-    createExpense(
-      title: $title
-      amount: $amount
-      category: $category
-      notes: $notes
-    ) {
+  mutation CreateExpense($title: String!, $amount: Float!, $category: String!, $notes: String) {
+    createExpense(title: $title, amount: $amount, category: $category, notes: $notes) {
       id
       title
       amount
@@ -40,6 +30,11 @@ export const CREATE_EXPENSE = gql`
         id
         name
       }
+      date
+      category { id name }
+    }
+  }
+`;
     }
   }
 `;
