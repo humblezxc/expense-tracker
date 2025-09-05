@@ -55,7 +55,7 @@ export default function ExpensesTable({page, setPage, selectedCategory, setSelec
 
     return (
         <>
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-2 space-y-6 shadow-sm">
                 <div className="flex items-center justify-between">
                     <h2 className="text-xl font-semibold">Expenses</h2>
                     <div className="flex gap-2 items-center">
